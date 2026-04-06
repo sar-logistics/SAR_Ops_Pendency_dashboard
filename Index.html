@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAR Logistics — Operational Pendency Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#333}
+  .app{padding:12px}
+  .topbar{background:#1a3a5c;border-radius:12px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .logo-box{background:#2e6da4;border-radius:8px;padding:6px 14px}
+  .logo-title{font-size:14px;font-weight:600;color:#e8f4ff}
+  .logo-sub{font-size:10px;color:#7ec8f7}
+  .topbar-right{display:flex;align-items:center;gap:8px}
+  .live-badge{background:#0f6e56;color:#9fe1cb;font-size:11px;border-radius:20px;padding:3px 12px;border:1px solid #1d9e75}
+  .date-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:11px;border-radius:8px;padding:4px 12px}
+  .tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+  .tab-btn{padding:7px 18px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s}
+  .filters{background:#fafafa;border:1px solid #ebebeb;border-radius:12px;padding:12px 18px;display:flex;align-items:flex-end;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+  .filter-group{display:flex;flex-direction:column;gap:3px}
+  .filter-label{font-size:10px;color:#999;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+  select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e0;background:#fafafa;color:#333;cursor:pointer;min-width:110px}
+  .reset-btn{background:#1a3a5c;color:#7ec8f7;border:none;border-radius:8px;padding:6px 16px;font-size:11px;cursor:pointer;font-weight:500}
+  .section-label{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin:16px 0 8px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:10px}
+  .risk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .kpi-card{border-radius:12px;padding:12px 14px;border-top:3px solid;cursor:default;position:relative;transition:box-shadow 0.15s}
+  .kpi-card.clickable{cursor:pointer}
+  .kpi-card.clickable:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12)}
+  .kpi-card .click-hint{position:absolute;top:8px;right:10px;font-size:10px;font-weight:600;opacity:0.7}
+  .kpi-label{font-size:11px;color:#888;margin-bottom:5px}
+  .kpi-value{font-size:22px;font-weight:500}
+  .kpi-sub{font-size:11px;color:#aaa;margin-top:4px}
+  .risk-card{border-radius:12px;padding:12px 14px;border-top:3px solid;cursor:pointer;position:relative;transition:box-shadow 0.15s}
+  .risk-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12)}
+  .risk-label{font-size:11px;color:#888;margin-bottom:5px}
+  .risk-value{font-size:26px;font-weight:500}
+  .risk-bar-track{height:6px;background:#e8e8e8;border-radius:3px;margin:8px 0 4px}
+  .risk-bar-fill{height:6px;border-radius:3px}
+  .risk-pct{font-size:10px;color:#aaa}
+  .risk-hint{position:absolute;top:8px;right:10px;font-size:10px;font-weight:600;opacity:0.7}
+  .card{background:#fafafa;border:1px solid #ebebeb;border-radius:12px;padding:14px}
+  .card-title{font-size:12px;font-weight:600;margin-bottom:10px;color:#444}
+  .card-hint{font-size:10px;color:#aaa;font-weight:400}
+  .trend-wrap{background:#fafafa;border:1px solid #ebebeb;border-radius:12px;padding:16px 20px;margin-bottom:12px;position:relative}
+  .trend-bars{display:flex;align-items:flex-end;gap:6px;height:120px;position:relative}
+  .trend-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:0;cursor:pointer}
+  .trend-bar{width:70%;border-radius:4px 4px 0 0;min-height:3px;opacity:0.85}
+  .trend-month{height:30px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;font-weight:500}
+  .tooltip{position:absolute;background:#1a3a5c;color:#fff;font-size:11px;padding:4px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10;transform:translateX(-50%);display:none}
+  .mini-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;border-radius:6px;padding:3px 4px;transition:background 0.12s}
+  .mini-bar-row.clickable{cursor:pointer}
+  .mini-bar-row.clickable:hover{background:#f0f4fa}
+  .mini-bar-label{font-size:11px;color:#777;width:100px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+  .mini-bar-label.narrow{width:90px}
+  .mini-bar-track{flex:1;border-radius:4px;height:14px;overflow:hidden}
+  .mini-bar-fill{height:100%;border-radius:4px}
+  .mini-bar-val{font-size:11px;color:#555;width:32px;text-align:right;flex-shrink:0;font-weight:500}
+  .owner-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f0f0}
+  .rank-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+  .owner-name{flex:1;font-size:12px;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .aging-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .aging-bucket{border-radius:12px;padding:12px 14px;border-top:3px solid}
+  .aging-val{font-size:20px;font-weight:500}
+  .aging-lbl{font-size:11px;color:#666;margin-top:4px}
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding-top:40px;overflow-y:auto}
+  .modal-box{background:#fff;border-radius:14px;width:95%;max-width:1100px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
+  .modal-header{padding:16px 20px;border-bottom:1px solid #ebebeb;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+  .modal-title{font-size:15px;font-weight:600;color:#1a3a5c}
+  .modal-subtitle{font-size:12px;color:#888;margin-top:2px}
+  .modal-actions{display:flex;gap:10px;align-items:center}
+  .download-btn{background:#1a3a5c;color:#fff;border:none;border-radius:8px;padding:7px 16px;font-size:12px;cursor:pointer;font-weight:500}
+  .close-btn{background:#f5f5f5;color:#555;border:none;border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-weight:600}
+  .modal-body{overflow-y:auto;padding:0 4px 12px}
+  .modal-table{width:100%;border-collapse:collapse;font-size:11px}
+  .modal-table thead{position:sticky;top:0;background:#f0f4fa;z-index:1}
+  .modal-table th{color:#555;font-weight:600;padding:9px 10px;border-bottom:1px solid #ddd;text-align:left;white-space:nowrap}
+  .modal-table td{padding:7px 10px;border-bottom:1px solid #f0f0f0;white-space:nowrap}
+  .modal-table tr:nth-child(even){background:#fafafa}
+  .badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
+  .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;gap:12px}
+  .loading-text{font-size:14px;color:#888}
+  .loading-bar{width:220px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden}
+  .loading-fill{width:60%;height:5px;background:#185fa5;border-radius:3px}
+  .no-data{font-size:12px;color:#aaa;padding:16px 0}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="loading">
+    <div class="loading-text" id="loadMsg">Initialising dashboard...</div>
+    <div class="loading-bar"><div class="loading-fill"></div></div>
+  </div>
+</div>
+
+<script>
+const LOBS = [
+  { key:"sea_export", label:"Sea Export", file:"SAR_IN  Claude Dashboard Source  Sea Export.csv",  color:"#185fa5", pastel:"#e6f1fb" },
+  { key:"sea_import", label:"Sea Import", file:"SAR_IN  Claude Dashboard Source  Sea Import.csv",  color:"#0f6e56", pastel:"#e1f5ee" },
+  { key:"air_export", label:"Air Export", file:"SAR_IN  Claude Dashboard Source  Air Export.csv",  color:"#854f0b", pastel:"#faeeda" },
+  { key:"air_import", label:"Air Import", file:"SAR_IN  Claude Dashboard Source  Air Import.csv",  color:"#712b13", pastel:"#faece7" },
+  { key:"general",    label:"General",    file:"SAR_IN  Claude Dashboard Source  General.csv",     color:"#533489", pastel:"#eeedfe" },
+  { key:"iso_tank",   label:"ISO Tank",   file:"SAR_IN  Claude Dashboard Source  ISO Tank.csv",    color:"#3b6d11", pastel:"#eaf3de" },
+];
+const ZONE_FILE = "SAR_IN  Claude Dashboard Source  Zone Mapping with Targets.csv";
+const EXCLUDED_BRANCHES = ["AMS"];
+const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const BAR_COLORS  = ["#e24b4a","#d85a30","#ef9f27","#185fa5","#1d9e75","#7f77dd","#378add","#993c1d","#854f0b","#0f6e56"];
+const BAR_PASTELS = ["#fcebeb","#faece7","#faeeda","#e6f1fb","#e1f5ee","#eeedfe","#e6f1fb","#faece7","#faeeda","#e1f5ee"];
+const RANK_COLORS = ["#a32d2d","#993c1d","#854f0b","#185fa5","#0f6e56","#533489","#3b6d11","#712b13"];
+const RANK_BG     = ["#fcebeb","#faece7","#faeeda","#e6f1fb","#e1f5ee","#eeedfe","#eaf3de","#faece7"];
+
+const DOWNLOAD_COLS = [
+  "Shipment No","LOB","Location","Job Owner","Job Date","ETD Loading Port","ETA Discharge",
+  "Provisional Revenue (A)","Billed Revenue (C)","Unbilled Revenue (D=A-C)",
+  "Provisional Cost (E)","Posted Cost (G)","Unposted Cost (H = E-G)",
+  "Accrual Cost","WIP Revenue","Provisional Profit (I=A-E)","Actual Profit (J=C-G)"
+];
+const DOWNLOAD_HEADERS = [
+  "Shipment No","LOB","Branch","Job Owner","Job Date","ETD Loading Port","ETA Discharge",
+  "Provisional Revenue","Billed Revenue","Unbilled Revenue",
+  "Provisional Cost","Posted Cost","Unposted Cost",
+  "Accrual Cost","WIP Revenue","Provisional Profit","Actual Profit"
+];
+
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+
+let allData = {};
+let zoneMap = {};
+let activeTab = "sea_export";
+let filters = { branch:"All", zone:"All", region:"All", jobOwner:"All", month:"All" };
+
+/* ── Helpers ── */
+function fmtMonthKey(k){ if(!k||k.length<7)return k; const[y,m]=k.split("-"); return `${MONTH_NAMES[parseInt(m,10)-1]} ${y}`; }
+function fmtMonthShort(k){ if(!k||k.length<7)return k; const[,m]=k.split("-"); return MONTH_NAMES[parseInt(m,10)-1]||m; }
+function parseDate(s){ if(!s||s===""||s==="null")return null; const d=new Date(s); return isNaN(d.getTime())?null:d; }
+function agingDays(row){ const b=parseDate(row["ETD Loading Port"])||parseDate(row["Job Date"]); if(!b)return 0; return Math.max(0,Math.floor((TODAY-b)/86400000)); }
+function isPending(row){ const ol=row["Operation Lock"]; return !ol||ol.toString().trim()===""||ol.toString().trim().toLowerCase()==="null"; }
+function ageBadgeStyle(d){
+  if(d>30)return{bg:"#fef2f2",color:"#a32d2d"};
+  if(d>15)return{bg:"#fff5f0",color:"#993c1d"};
+  if(d>7) return{bg:"#fffbf0",color:"#854f0b"};
+  return{bg:"#eaf3de",color:"#3b6d11"};
+}
+
+/* ── CSV loading ── */
+function loadCSV(path){ return new Promise((res,rej)=>{ Papa.parse(path,{download:true,header:true,skipEmptyLines:true,complete:r=>res(r.data),error:rej}); }); }
+
+async function init(){
+  setMsg("Loading zone mapping...");
+  try{
+    const zd = await loadCSV(ZONE_FILE);
+    zd.forEach(r=>{ const n=(r["Sales Rep Name"]||"").trim(); if(n) zoneMap[n.toLowerCase()]={zone:r["Zone"]||"",region:r["Region"]||""}; });
+  }catch(e){ console.warn("Zone map failed",e); }
+
+  for(const lob of LOBS){
+    setMsg(`Loading ${lob.label}...`);
+    try{ allData[lob.key]=await loadCSV(lob.file); }
+    catch(e){ allData[lob.key]=[]; }
+  }
+  render();
+}
+
+function setMsg(m){ const el=document.getElementById("loadMsg"); if(el)el.textContent=m; }
+
+/* ── Data helpers ── */
+function enrichData(rows, lobKey){
+  return rows
+    .filter(r=>{ const loc=(r["Location"]||"").trim(); return loc!==""&&!EXCLUDED_BRANCHES.includes(loc); })
+    .map(r=>{
+      const zi = lobKey==="iso_tank"?{zone:"N/A",region:"N/A"}:(zoneMap[(r["Sales Person"]||"").trim().toLowerCase()]||{zone:"",region:""});
+      const jd=parseDate(r["Job Date"]);
+      const mk=jd?`${jd.getFullYear()}-${String(jd.getMonth()+1).padStart(2,"0")}`:"";
+      return{...r,_pending:isPending(r),_aging:agingDays(r),_zone:zi.zone,_region:zi.region,_monthKey:mk};
+    });
+}
+
+function applyFilters(enriched){
+  return enriched.filter(r=>{
+    if(filters.branch!=="All"&&r["Location"]!==filters.branch)return false;
+    if(filters.zone!=="All"&&r._zone!==filters.zone)return false;
+    if(filters.region!=="All"&&r._region!==filters.region)return false;
+    if(filters.jobOwner!=="All"&&(r["Job Owner"]||"").trim()!==filters.jobOwner)return false;
+    if(filters.month!=="All"&&fmtMonthKey(r._monthKey)!==filters.month)return false;
+    return true;
+  });
+}
+
+function uniq(arr){ return [...new Set(arr)]; }
+
+/* ── Download ── */
+function downloadCSV(rows, filename){
+  const lines=[DOWNLOAD_HEADERS.join(",")];
+  rows.forEach(r=>{
+    const vals=DOWNLOAD_COLS.map(col=>{ let v=String(r[col]||"").replace(/"/g,'""'); return `"${v}"`; });
+    lines.push(vals.join(","));
+  });
+  const blob=new Blob([lines.join("\n")],{type:"text/csv"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildFilename(label){
+  const lob=LOBS.find(l=>l.key===activeTab).label.replace(/\s+/g,"");
+  const mo=filters.month==="All"?"AllMonths":filters.month.replace(/\s+/g,"");
+  const br=filters.branch==="All"?"AllBranches":filters.branch.replace(/\s+/g,"");
+  return `${lob}_${label}_${mo}_${br}.csv`;
+}
+
+/* ── Modal ── */
+function openModal(title, subtitle, rows, filenameLabel){
+  const filename=buildFilename(filenameLabel);
+  const overlay=document.createElement("div");
+  overlay.className="modal-overlay";
+  overlay.innerHTML=`
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">${title}</div>
+          <div class="modal-subtitle">${subtitle}</div>
+        </div>
+        <div class="modal-actions">
+          <button class="download-btn" id="dlBtn">⬇ Download CSV (${rows.length} jobs)</button>
+          <button class="close-btn" id="closeBtn">✕</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <table class="modal-table">
+          <thead><tr>
+            <th>#</th><th>Shipment No</th><th>Branch</th><th>Job Owner</th>
+            <th>Job Date</th><th>ETD Loading Port</th><th>ETA Discharge</th><th>Aging</th>
+            <th>Prov. Revenue</th><th>Billed Revenue</th><th>Unbilled Revenue</th>
+            <th>Prov. Cost</th><th>Posted Cost</th><th>Unposted Cost</th>
+            <th>Accrual Cost</th><th>WIP Revenue</th><th>Prov. Profit</th><th>Actual Profit</th>
+          </tr></thead>
+          <tbody>${rows.map((r,i)=>{
+            const b=ageBadgeStyle(r._aging);
+            return`<tr>
+              <td style="color:#aaa">${i+1}</td>
+              <td style="color:#185fa5;font-weight:600">${r["Shipment No"]||"—"}</td>
+              <td>${r["Location"]||"—"}</td>
+              <td>${r["Job Owner"]||"—"}</td>
+              <td>${r["Job Date"]||"—"}</td>
+              <td>${r["ETD Loading Port"]||"—"}</td>
+              <td>${r["ETA Discharge"]||"—"}</td>
+              <td><span class="badge" style="background:${b.bg};color:${b.color}">${r._aging}d</span></td>
+              <td>${r["Provisional Revenue (A)"]||"—"}</td>
+              <td>${r["Billed Revenue (C)"]||"—"}</td>
+              <td>${r["Unbilled Revenue (D=A-C)"]||"—"}</td>
+              <td>${r["Provisional Cost (E)"]||"—"}</td>
+              <td>${r["Posted Cost (G)"]||"—"}</td>
+              <td>${r["Unposted Cost (H = E-G)"]||"—"}</td>
+              <td>${r["Accrual Cost"]||"—"}</td>
+              <td>${r["WIP Revenue"]||"—"}</td>
+              <td>${r["Provisional Profit (I=A-E)"]||"—"}</td>
+              <td>${r["Actual Profit (J=C-G)"]||"—"}</td>
+            </tr>`;
+          }).join("")}</tbody>
+        </table>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector("#closeBtn").onclick=()=>overlay.remove();
+  overlay.querySelector("#dlBtn").onclick=()=>downloadCSV(rows,filename);
+  overlay.addEventListener("click",e=>{ if(e.target===overlay)overlay.remove(); });
+}
+
+/* ── Main Render ── */
+function render(){
+  const lobInfo = LOBS.find(l=>l.key===activeTab);
+  const enriched = enrichData(allData[activeTab]||[], activeTab);
+
+  const branches  = ["All",...uniq(enriched.map(r=>(r["Location"]||"").trim()).filter(Boolean)).sort()];
+  const zones     = activeTab==="iso_tank"?["All"]:["All",...uniq(enriched.map(r=>r._zone).filter(v=>v&&v.trim()!=="")).sort()];
+  const regions   = activeTab==="iso_tank"?["All"]:["All",...uniq(enriched.map(r=>r._region).filter(v=>v&&v.trim()!=="")).sort()];
+  const jobOwners = ["All",...uniq(enriched.map(r=>(r["Job Owner"]||"").trim()).filter(Boolean)).sort()];
+  const monthKeys = uniq(enriched.map(r=>r._monthKey).filter(Boolean)).sort().reverse();
+  const monthOpts = ["All",...monthKeys.map(fmtMonthKey)];
+
+  const filtered  = applyFilters(enriched);
+  const pending   = filtered.filter(r=>r._pending);
+  const totalJobs = filtered.length;
+  const totalPend = pending.length;
+  const avgAging  = totalPend>0?pending.reduce((s,r)=>s+r._aging,0)/totalPend:0;
+  const gt7  = pending.filter(r=>r._aging>7);
+  const gt15 = pending.filter(r=>r._aging>15);
+  const gt30 = pending.filter(r=>r._aging>30);
+  const b0_7   = pending.filter(r=>r._aging<=7).length;
+  const b8_15  = pending.filter(r=>r._aging>=8&&r._aging<=15).length;
+  const b16_30 = pending.filter(r=>r._aging>=16&&r._aging<=30).length;
+  const b30p   = pending.filter(r=>r._aging>30).length;
+
+  const branchMap={};
+  pending.forEach(r=>{ const b=(r["Location"]||"").trim(); if(b)branchMap[b]=(branchMap[b]||0)+1; });
+  const branchArr=Object.entries(branchMap).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxBranch=branchArr[0]?.[1]||1;
+
+  const ownerMap={};
+  pending.forEach(r=>{ const o=(r["Job Owner"]||"").trim(); if(o)ownerMap[o]=(ownerMap[o]||0)+1; });
+  const ownerArr=Object.entries(ownerMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxOwner=ownerArr[0]?.[1]||1;
+
+  const monthlyMap={};
+  pending.forEach(r=>{ if(r._monthKey)monthlyMap[r._monthKey]=(monthlyMap[r._monthKey]||0)+1; });
+  const monthlyArr=Object.entries(monthlyMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-10);
+  const maxMonthly=Math.max(...monthlyArr.map(x=>x[1]),1);
+
+  const zoneMap2={};
+  pending.forEach(r=>{ const z=(r._zone||"").trim(); if(z)zoneMap2[z]=(zoneMap2[z]||0)+1; });
+  const zoneArr=Object.entries(zoneMap2).sort((a,b)=>b[1]-a[1]);
+
+  function filterSelect(id,opts,val){
+    return`<div class="filter-group">
+      <span class="filter-label">${id}</span>
+      <select onchange="setFilter('${id.toLowerCase().replace(' ','')}',this.value)">
+        ${opts.map(o=>`<option${o===val?" selected":""}>${o}</option>`).join("")}
+      </select>
+    </div>`;
+  }
+
+  function miniBar(val,max,color,pastel){
+    const pct=max>0?Math.round((val/max)*100):0;
+    return`<div class="mini-bar-track" style="background:${pastel}"><div class="mini-bar-fill" style="width:${pct}%;background:${color}"></div></div>`;
+  }
+
+  const html=`
+  <div class="topbar">
+    <div class="logo-box"><div class="logo-title">SAR Logistics</div><div class="logo-sub">Operational Pendency Dashboard</div></div>
+    <div class="topbar-right">
+      <div class="live-badge">● Live Data</div>
+      <div class="date-badge">${TODAY.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    ${LOBS.map(l=>`<button class="tab-btn" onclick="switchTab('${l.key}')"
+      style="background:${activeTab===l.key?l.color:l.pastel};color:${activeTab===l.key?"#fff":l.color};
+      box-shadow:${activeTab===l.key?`0 2px 8px ${l.color}44`:"none"}">${l.label}</button>`).join("")}
+  </div>
+
+  <div class="filters">
+    ${filterSelect("Branch",branches,filters.branch)}
+    ${activeTab!=="iso_tank"?filterSelect("Zone",zones,filters.zone)+filterSelect("Region",regions,filters.region):""}
+    ${filterSelect("Job Owner",jobOwners,filters.jobOwner)}
+    ${filterSelect("Month",monthOpts,filters.month)}
+    <div class="filter-group"><span class="filter-label" style="color:transparent">x</span>
+      <button class="reset-btn" onclick="resetFilters()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="section-label">Executive Summary — ${lobInfo.label}</div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="background:#eef5fd;border-color:#185fa5">
+      <div class="kpi-label">Total Jobs</div>
+      <div class="kpi-value" style="color:#185fa5">${totalJobs.toLocaleString()}</div>
+      <div class="kpi-sub">In selected view</div>
+    </div>
+    <div class="kpi-card clickable" style="background:#fef2f2;border-color:#a32d2d"
+      onclick="openKpiModal('Op Lock Pending Jobs',pendingRows,'OpLockPending')">
+      <div class="click-hint" style="color:#a32d2d">click to view ↗</div>
+      <div class="kpi-label">Op Lock Pending</div>
+      <div class="kpi-value" style="color:#a32d2d">${totalPend.toLocaleString()}</div>
+      <div class="kpi-sub" style="color:#a32d2d">${totalJobs>0?Math.round(totalPend/totalJobs*100):0}% of total jobs</div>
+    </div>
+    <div class="kpi-card" style="background:#fffbf0;border-color:#854f0b">
+      <div class="kpi-label">Avg Aging (days)</div>
+      <div class="kpi-value" style="color:#854f0b">${avgAging.toFixed(1)}</div>
+      <div class="kpi-sub">ETD or Job Date base</div>
+    </div>
+    <div class="kpi-card" style="background:#f5f5f5;border-color:#888">
+      <div class="kpi-label">HBL Pending</div>
+      <div class="kpi-value" style="color:#888">—</div>
+      <div class="kpi-sub">Coming soon</div>
+    </div>
+    <div class="kpi-card" style="background:#f5f5f5;border-color:#888">
+      <div class="kpi-label">MBL Pending</div>
+      <div class="kpi-value" style="color:#888">—</div>
+      <div class="kpi-sub">Coming soon</div>
+    </div>
+  </div>
+
+  <div class="risk-grid">
+    <div class="risk-card" style="background:#fffbf0;border-color:#ef9f27"
+      onclick="openKpiModal('Jobs > ETD + 7 Days',gt7Rows,'ETDPlus7')">
+      <div class="risk-hint" style="color:#ef9f27">click to view ↗</div>
+      <div class="risk-label">Jobs > ETD + 7 Days</div>
+      <div class="risk-value" style="color:#ef9f27">${gt7.length.toLocaleString()}</div>
+      <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#ef9f27;width:${totalPend>0?Math.round(gt7.length/totalPend*100):0}%"></div></div>
+      <div class="risk-pct">${totalPend>0?Math.round(gt7.length/totalPend*100):0}% of pending</div>
+    </div>
+    <div class="risk-card" style="background:#fff5f0;border-color:#d85a30"
+      onclick="openKpiModal('Jobs > ETD + 15 Days',gt15Rows,'ETDPlus15')">
+      <div class="risk-hint" style="color:#d85a30">click to view ↗</div>
+      <div class="risk-label">Jobs > ETD + 15 Days</div>
+      <div class="risk-value" style="color:#d85a30">${gt15.length.toLocaleString()}</div>
+      <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#d85a30;width:${totalPend>0?Math.round(gt15.length/totalPend*100):0}%"></div></div>
+      <div class="risk-pct">${totalPend>0?Math.round(gt15.length/totalPend*100):0}% of pending</div>
+    </div>
+    <div class="risk-card" style="background:#fef2f2;border-color:#e24b4a"
+      onclick="openKpiModal('Jobs > ETD + 30 Days',gt30Rows,'ETDPlus30')">
+      <div class="risk-hint" style="color:#e24b4a">click to view ↗</div>
+      <div class="risk-label">Jobs > ETD + 30 Days</div>
+      <div class="risk-value" style="color:#e24b4a">${gt30.length.toLocaleString()}</div>
+      <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#e24b4a;width:${totalPend>0?Math.round(gt30.length/totalPend*100):0}%"></div></div>
+      <div class="risk-pct">${totalPend>0?Math.round(gt30.length/totalPend*100):0}% of pending</div>
+    </div>
+  </div>
+
+  <div class="section-label">Monthly Pendency Trend</div>
+  <div class="trend-wrap">
+    <div class="trend-bars" id="trendBars">
+      ${monthlyArr.map(([mk,v])=>{
+        const h=Math.round((v/maxMonthly)*100);
+        return`<div class="trend-col"
+          onmouseenter="showTip(event,${v})"
+          onmouseleave="hideTip()">
+          <div class="trend-bar" style="height:${h}px;background:${lobInfo.color}"></div>
+          <div class="trend-month">${fmtMonthShort(mk)}</div>
+        </div>`;
+      }).join("")}
+      <div class="tooltip" id="chartTooltip"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Aging Distribution &amp; Zone-wise Pendency</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Aging Distribution</div>
+      <div class="aging-grid">
+        <div class="aging-bucket" style="background:#e8f9f3;border-color:#1d9e75">
+          <div class="aging-val" style="color:#1d9e75">${b0_7.toLocaleString()}</div>
+          <div class="aging-lbl">0–7 days (Fresh)</div>
+        </div>
+        <div class="aging-bucket" style="background:#fffbf0;border-color:#ef9f27">
+          <div class="aging-val" style="color:#ef9f27">${b8_15.toLocaleString()}</div>
+          <div class="aging-lbl">8–15 days (Watch)</div>
+        </div>
+        <div class="aging-bucket" style="background:#fff5f0;border-color:#d85a30">
+          <div class="aging-val" style="color:#d85a30">${b16_30.toLocaleString()}</div>
+          <div class="aging-lbl">16–30 days (Risk)</div>
+        </div>
+        <div class="aging-bucket" style="background:#fef2f2;border-color:#e24b4a">
+          <div class="aging-val" style="color:#e24b4a">${b30p.toLocaleString()}</div>
+          <div class="aging-lbl">30+ days (Critical)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">${activeTab==="iso_tank"?"ISO Tank — No Zone Mapping":"Zone-wise Pendency"}</div>
+      ${activeTab==="iso_tank"
+        ?`<div class="no-data">ISO Tank LOB does not follow zone mapping.</div>`
+        :zoneArr.length===0
+          ?`<div class="no-data">No zone data available</div>`
+          :zoneArr.map(([z,v],i)=>`
+            <div class="mini-bar-row">
+              <div class="mini-bar-label narrow">${z}</div>
+              ${miniBar(v,zoneArr[0][1],BAR_COLORS[i%BAR_COLORS.length],BAR_PASTELS[i%BAR_PASTELS.length])}
+              <div class="mini-bar-val">${v}</div>
+            </div>`).join("")
+      }
+    </div>
+  </div>
+
+  <div class="section-label">Branch Analysis &amp; Job Owner Accountability</div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Top 10 Branches — Pending Jobs <span class="card-hint">(click a branch to view jobs)</span></div>
+      ${branchArr.length===0?`<div class="no-data">No pending jobs</div>`:
+        branchArr.map(([b,v],i)=>`
+          <div class="mini-bar-row clickable" onclick="openBranchModal('${b.replace(/'/g,"\\'")}')">
+            <div class="mini-bar-label">${b}</div>
+            ${miniBar(v,maxBranch,BAR_COLORS[i%BAR_COLORS.length],BAR_PASTELS[i%BAR_PASTELS.length])}
+            <div class="mini-bar-val">${v}</div>
+          </div>`).join("")
+      }
+    </div>
+    <div class="card">
+      <div class="card-title">Job Owner Leaderboard — Highest Pending</div>
+      ${ownerArr.length===0?`<div class="no-data">No data</div>`:
+        ownerArr.map(([o,v],i)=>`
+          <div class="owner-row">
+            <div class="rank-badge" style="background:${RANK_BG[i]};color:${RANK_COLORS[i]}">${i+1}</div>
+            <div class="owner-name">${o}</div>
+            ${miniBar(v,maxOwner,RANK_COLORS[i],RANK_BG[i])}
+            <div class="mini-bar-val">${v}</div>
+          </div>`).join("")
+      }
+    </div>
+  </div>`;
+
+  document.getElementById("app").innerHTML=html;
+
+  /* store current computed arrays for onclick callbacks */
+  window.pendingRows = pending;
+  window.gt7Rows     = gt7;
+  window.gt15Rows    = gt15;
+  window.gt30Rows    = gt30;
+  window.currentPending = pending;
+}
+
+/* ── Global callbacks ── */
+window.switchTab = function(key){ activeTab=key; filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"}; render(); };
+window.resetFilters = function(){ filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"}; render(); };
+window.setFilter = function(key,val){ filters[key]=val; render(); };
+
+window.openKpiModal = function(title, rows, label){
+  const lob=LOBS.find(l=>l.key===activeTab).label;
+  openModal(title, `${rows.length} jobs — ${lob} | Branch: ${filters.branch} | Month: ${filters.month}`, rows, label);
+};
+
+window.openBranchModal = function(branch){
+  const rows=window.currentPending.filter(r=>(r["Location"]||"").trim()===branch);
+  const lob=LOBS.find(l=>l.key===activeTab).label;
+  openModal(`Branch: ${branch} — Pending Jobs`, `${rows.length} jobs — ${lob} | Month: ${filters.month}`, rows, `Branch_${branch}`);
+};
+
+window.showTip = function(e, count){
+  const tt=document.getElementById("chartTooltip"); if(!tt)return;
+  const parent=document.getElementById("trendBars");
+  const pr=parent.getBoundingClientRect();
+  const cr=e.currentTarget.getBoundingClientRect();
+  tt.style.display="block";
+  tt.style.left=(cr.left-pr.left+cr.width/2)+"px";
+  tt.style.top=Math.max(0,cr.top-pr.top-36)+"px";
+  tt.textContent=`${count} pending`;
+};
+window.hideTip = function(){ const tt=document.getElementById("chartTooltip"); if(tt)tt.style.display="none"; };
+
+/* ── Boot ── */
+init();
+</script>
+</body>
+</html>
