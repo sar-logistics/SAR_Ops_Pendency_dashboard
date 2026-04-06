@@ -7,7 +7,9 @@
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#333;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#333;min-height:100vh}
+
+/* LOGIN */
 #loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a3a5c 0%,#2e6da4 100%)}
 .login-card{background:#fff;border-radius:16px;padding:48px 40px;width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25)}
 .login-logo{font-size:24px;font-weight:700;color:#1a3a5c;margin-bottom:4px}
@@ -19,11 +21,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .login-div::before,.login-div::after{content:"";flex:1;height:1px;background:#eee}
 .login-footer{font-size:11px;color:#ccc;margin-top:20px;line-height:1.6}
 #g_id_signin{display:flex;justify-content:center}
-#dashboard{display:none;padding:12px;background:#fff;min-height:100vh}
-.topbar{background:#1a3a5c;border-radius:12px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.logo-box{background:#2e6da4;border-radius:8px;padding:6px 14px}
-.logo-title{font-size:14px;font-weight:600;color:#e8f4ff}
-.logo-sub{font-size:10px;color:#7ec8f7}
+
+/* LAYOUT */
+#dashboard{display:none;min-height:100vh;background:#f0f4f8}
+.topbar{background:#1a3a5c;padding:10px 18px;display:flex;align-items:center;justify-content:space-between}
+.logo-box{display:flex;align-items:center;gap:10px}
+.logo-icon{background:#2e6da4;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:700;color:#e8f4ff;letter-spacing:0.5px}
+.logo-sub{font-size:11px;color:#7ec8f7;font-weight:500}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .live-badge{background:#0f6e56;color:#9fe1cb;font-size:11px;border-radius:20px;padding:3px 12px;border:1px solid #1d9e75}
 .date-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:11px;border-radius:8px;padding:4px 12px}
@@ -34,60 +38,103 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .validate-btn{background:transparent;color:#7ec8f7;border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:5px 14px;font-size:11px;cursor:pointer;font-weight:500}
 .validate-btn:hover{background:rgba(255,255,255,0.1)}
 .user-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:4px 12px;cursor:pointer}
-.user-avatar{width:24px;height:24px;border-radius:50%}
+.user-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover}
 .user-name{font-size:11px;color:rgba(255,255,255,0.85)}
 .signout-btn{font-size:10px;color:#7ec8f7;background:none;border:none;cursor:pointer}
 .last-refresh{font-size:10px;color:rgba(255,255,255,0.5);margin-left:4px}
-.tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
-.tab-btn{padding:7px 18px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s}
-.filters{background:#fafafa;border:1px solid #ebebeb;border-radius:12px;padding:12px 18px;display:flex;align-items:flex-end;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+
+/* BODY LAYOUT: sidebar + main */
+.body-wrap{display:flex;min-height:calc(100vh - 50px)}
+
+/* SIDEBAR */
+.sidebar{width:190px;flex-shrink:0;background:#1e2d40;padding:16px 10px;display:flex;flex-direction:column;gap:4px}
+.sidebar-label{font-size:9px;font-weight:700;color:#4a6580;text-transform:uppercase;letter-spacing:0.1em;padding:0 8px;margin:10px 0 6px}
+.lob-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:500;color:#a0b4c8;background:transparent;transition:all 0.15s;text-align:left;width:100%}
+.lob-btn:hover{background:rgba(255,255,255,0.07);color:#d0e4f4}
+.lob-btn.active{background:rgba(255,255,255,0.12);color:#fff}
+.lob-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.lob-count{margin-left:auto;font-size:10px;font-weight:600;background:rgba(255,255,255,0.08);padding:2px 7px;border-radius:10px}
+.lob-btn.active .lob-count{background:rgba(255,255,255,0.2)}
+
+/* MAIN CONTENT */
+.main-area{flex:1;padding:14px 16px;overflow-x:hidden;min-width:0}
+
+/* FILTERS */
+.filters{background:#fff;border:1px solid #e0e8f0;border-radius:12px;padding:10px 16px;display:flex;align-items:flex-end;gap:12px;margin-bottom:14px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
 .filter-group{display:flex;flex-direction:column;gap:3px}
 .filter-label{font-size:10px;color:#999;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
-select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e0;background:#fafafa;color:#333;cursor:pointer;min-width:110px}
+select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;color:#333;cursor:pointer;min-width:110px}
 .reset-btn{background:#1a3a5c;color:#7ec8f7;border:none;border-radius:8px;padding:6px 16px;font-size:11px;cursor:pointer;font-weight:500}
-.section-label{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.08em;margin:16px 0 8px}
-.kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:10px}
-.risk-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.kpi-card{border-radius:12px;padding:12px 14px;border-top:3px solid;position:relative;transition:box-shadow 0.15s}
+
+/* LOB HEADER */
+.lob-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.lob-header-dot{width:14px;height:14px;border-radius:4px;flex-shrink:0}
+.lob-header-title{font-size:16px;font-weight:600;color:#1a3a5c}
+.lob-header-sub{font-size:12px;color:#888;margin-left:4px}
+
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.kpi-card{border-radius:12px;padding:14px 16px;border-top:3px solid;position:relative;transition:box-shadow 0.15s;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .kpi-card.clickable{cursor:pointer}
 .kpi-card.clickable:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12)}
-.click-hint{position:absolute;top:8px;right:10px;font-size:10px;font-weight:600;opacity:0.7}
-.kpi-label{font-size:11px;color:#888;margin-bottom:5px}
-.kpi-value{font-size:22px;font-weight:500}
-.kpi-sub{font-size:11px;color:#aaa;margin-top:4px}
-.risk-card{border-radius:12px;padding:12px 14px;border-top:3px solid;cursor:pointer;position:relative;transition:box-shadow 0.15s}
+.click-hint{position:absolute;top:10px;right:12px;font-size:10px;font-weight:600;opacity:0.7}
+.kpi-label{font-size:11px;color:#888;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:600;line-height:1}
+.kpi-sub{font-size:11px;color:#aaa;margin-top:5px}
+
+/* RISK STRIP */
+.risk-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.risk-card{border-radius:12px;padding:12px 14px;border-top:3px solid;cursor:pointer;position:relative;transition:box-shadow 0.15s;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .risk-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.12)}
-.risk-label{font-size:11px;color:#888;margin-bottom:5px}
-.risk-value{font-size:26px;font-weight:500}
-.risk-bar-track{height:6px;background:#e8e8e8;border-radius:3px;margin:8px 0 4px}
-.risk-bar-fill{height:6px;border-radius:3px}
+.risk-label{font-size:11px;color:#888;margin-bottom:4px}
+.risk-value{font-size:22px;font-weight:600}
+.risk-bar-track{height:5px;background:#e8e8e8;border-radius:3px;margin:7px 0 4px}
+.risk-bar-fill{height:5px;border-radius:3px}
 .risk-pct{font-size:10px;color:#aaa}
 .risk-hint{position:absolute;top:8px;right:10px;font-size:10px;font-weight:600;opacity:0.7}
-.trend-wrap{background:#fafafa;border:1px solid #ebebeb;border-radius:12px;padding:16px 20px;margin-bottom:12px}
-.trend-bars{display:flex;align-items:flex-end;gap:6px;height:120px;position:relative}
+
+/* TREND */
+.section-label{font-size:10px;font-weight:700;color:#8a9bb0;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 8px}
+.trend-wrap{background:#fff;border:1px solid #e0e8f0;border-radius:12px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+.trend-bars{display:flex;align-items:flex-end;gap:6px;height:110px;position:relative}
 .trend-col{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .trend-bar{width:70%;border-radius:4px 4px 0 0;min-height:3px;opacity:0.85}
-.trend-month{height:30px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;font-weight:500}
+.trend-month{height:28px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;font-weight:500}
 .chart-tooltip{position:absolute;background:#1a3a5c;color:#fff;font-size:11px;padding:4px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;z-index:10;transform:translateX(-50%);display:none}
-.card{background:#fafafa;border:1px solid #ebebeb;border-radius:12px;padding:14px}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.card{background:#fff;border:1px solid #e0e8f0;border-radius:12px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
 .card-title{font-size:12px;font-weight:600;margin-bottom:10px;color:#444}
 .card-hint{font-size:10px;color:#aaa;font-weight:400}
+
+/* MINI BAR */
 .mini-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;border-radius:6px;padding:3px 4px;transition:background 0.12s}
 .mini-bar-row.clickable{cursor:pointer}
 .mini-bar-row.clickable:hover{background:#f0f4fa}
-.mini-bar-label{font-size:11px;color:#777;width:100px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
-.mini-bar-label.narrow{width:90px}
+.mini-bar-label{font-size:11px;color:#555;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
 .mini-bar-track{flex:1;border-radius:4px;height:14px;overflow:hidden}
 .mini-bar-fill{height:100%;border-radius:4px}
-.mini-bar-val{font-size:11px;color:#555;width:32px;text-align:right;flex-shrink:0;font-weight:500}
-.owner-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f0f0}
-.rank-badge{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
-.owner-name{flex:1;font-size:12px;color:#333;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.aging-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.aging-bucket{border-radius:12px;padding:12px 14px;border-top:3px solid}
-.aging-val{font-size:20px;font-weight:500}
-.aging-lbl{font-size:11px;color:#666;margin-top:4px}
+.mini-bar-val{font-size:11px;color:#555;width:32px;text-align:right;flex-shrink:0;font-weight:600}
+
+/* OWNER TABLE */
+.owner-table{width:100%;border-collapse:collapse;font-size:11px}
+.owner-table th{font-size:10px;font-weight:700;color:#8a9bb0;text-transform:uppercase;letter-spacing:0.05em;padding:6px 8px;border-bottom:2px solid #eef2f7;text-align:left}
+.owner-table th.num{text-align:right}
+.owner-table td{padding:7px 8px;border-bottom:1px solid #f0f4f8;vertical-align:middle}
+.owner-table td.num{text-align:right;font-weight:600}
+.owner-table tr:hover td{background:#f7fafd}
+.rank-badge{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.owner-name-cell{font-size:12px;color:#1a3a5c;font-weight:500}
+.pend-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.owner-bar-cell{width:90px}
+
+/* ZONE */
+.zone-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f4f8;font-size:12px}
+.zone-name{color:#555;flex:1}
+.zone-val{font-weight:600;color:#1a3a5c;width:36px;text-align:right}
+
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding-top:30px;overflow-y:auto;padding-bottom:30px}
 .modal-box{background:#fff;border-radius:14px;width:95%;max-width:1200px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.18)}
 .modal-header{padding:16px 20px;border-bottom:1px solid #ebebeb;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -102,16 +149,17 @@ select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e
 .modal-table th{color:#555;font-weight:600;padding:9px 10px;border-bottom:1px solid #ddd;text-align:left;white-space:nowrap}
 .modal-table td{padding:7px 10px;border-bottom:1px solid #f0f0f0;white-space:nowrap}
 .modal-table tr:nth-child(even) td{background:#fafafa}
-.modal-table td.num{text-align:right}
-.modal-table th.num{text-align:right}
 .badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}
+
+/* LOADING */
 #loadingOverlay{position:fixed;inset:0;background:rgba(255,255,255,0.97);z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .loading-spinner{width:40px;height:40px;border:3px solid #e0e0e0;border-top:3px solid #185fa5;border-radius:50%;animation:spin 0.8s linear infinite}
 .loading-text{font-size:14px;color:#555;font-weight:500}
 .loading-bar-wrap{width:260px;height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden}
 .loading-bar-fill{height:5px;background:#185fa5;border-radius:3px;transition:width 0.4s}
 .error-box{background:#fef2f2;color:#a32d2d;border:1px solid #f5c1c1;border-radius:10px;padding:20px 28px;font-size:13px;text-align:center;max-width:480px;line-height:1.8}
-.no-data{font-size:12px;color:#aaa;padding:16px 0}
+.no-data{font-size:12px;color:#aaa;padding:16px 0;text-align:center}
+
 /* Pivot table styles */
 .pivot-section{margin-bottom:20px}
 .pivot-section h3{font-size:13px;font-weight:600;color:#1a3a5c;margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid #e6f1fb}
@@ -152,10 +200,14 @@ select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e
 </div>
 
 <div id="dashboard">
+  <!-- TOP BAR -->
   <div class="topbar">
     <div class="logo-box">
-      <div class="logo-title">SAR Logistics</div>
-      <div class="logo-sub">Operational Pendency Dashboard</div>
+      <div class="logo-icon">SAR</div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#e8f4ff">SAR Logistics</div>
+        <div class="logo-sub">Operational Pendency Dashboard — L1 Management View</div>
+      </div>
     </div>
     <div class="topbar-right">
       <div class="live-badge">● Live Data</div>
@@ -172,9 +224,23 @@ select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e
       </div>
     </div>
   </div>
-  <div class="tabs" id="tabsRow"></div>
-  <div class="filters" id="filtersRow"></div>
-  <div id="mainContent"></div>
+
+  <!-- BODY: SIDEBAR + MAIN -->
+  <div class="body-wrap">
+
+    <!-- SIDEBAR: LOB Navigation -->
+    <div class="sidebar">
+      <div class="sidebar-label">Line of Business</div>
+      <div id="lobNav"></div>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="main-area">
+      <div class="filters" id="filtersRow"></div>
+      <div id="mainContent"></div>
+    </div>
+
+  </div>
 </div>
 
 <script>
@@ -182,12 +248,12 @@ const CLIENT_ID = "123086218295-n33s8t2mhts1qrhqh68mf37k18kscbnh.apps.googleuser
 const SHEET_ID  = "1OHIGmt75ZYp7obOdw7UgPOqv6xMMFf_rKdGcBwlppBA";
 const SCOPES    = "https://www.googleapis.com/auth/spreadsheets.readonly";
 const LOB_DEFS  = [
-  {key:"sea_export",label:"Sea Export",color:"#185fa5",pastel:"#e6f1fb"},
-  {key:"sea_import",label:"Sea Import",color:"#0f6e56",pastel:"#e1f5ee"},
-  {key:"air_export",label:"Air Export",color:"#854f0b",pastel:"#faeeda"},
-  {key:"air_import",label:"Air Import",color:"#712b13",pastel:"#faece7"},
-  {key:"general",   label:"General",  color:"#533489",pastel:"#eeedfe"},
-  {key:"iso_tank",  label:"ISO Tank", color:"#3b6d11",pastel:"#eaf3de"},
+  {key:"sea_export", label:"Sea Export", color:"#185fa5", pastel:"#e6f1fb"},
+  {key:"sea_import", label:"Sea Import", color:"#0f6e56", pastel:"#e1f5ee"},
+  {key:"air_export", label:"Air Export", color:"#854f0b", pastel:"#faeeda"},
+  {key:"air_import", label:"Air Import", color:"#712b13", pastel:"#faece7"},
+  {key:"general",    label:"General",   color:"#533489", pastel:"#eeedfe"},
+  {key:"iso_tank",   label:"ISO Tank",  color:"#3b6d11", pastel:"#eaf3de"},
 ];
 const ZONE_KW=["zone","mapping","target"];
 const EXCL=["AMS"];
@@ -202,6 +268,8 @@ const DLH=["Shipment No","LOB","Branch","Job Owner","Job Date","ETD Loading Port
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
 let token=null,allData={},rawData={},zMap={},activeTab="sea_export",SHEET_TABS=[];
 let filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};
+// pendingCounts per LOB for sidebar badges
+let lobPendCounts={};
 
 const fmtMK=k=>{if(!k||k.length<7)return k;const[y,m]=k.split("-");return`${MN[parseInt(m,10)-1]} ${y}`;};
 const fmtMS=k=>{if(!k||k.length<7)return k;const[,m]=k.split("-");return MN[parseInt(m,10)-1]||m;};
@@ -210,7 +278,6 @@ const aging=r=>{const b=pD(r["ETD Loading Port"])||pD(r["Job Date"]);if(!b)retur
 const isPend=r=>{const ol=r["Operation Lock"];return!ol||ol.toString().trim()===""||ol.toString().trim().toLowerCase()==="null";};
 const uniq=a=>[...new Set(a)];
 const pct=(n,d)=>d>0?Math.round(n/d*100):0;
-const ab=d=>{if(d>30)return{bg:"#fef2f2",c:"#a32d2d"};if(d>15)return{bg:"#fff5f0",c:"#993c1d"};if(d>7)return{bg:"#fffbf0",c:"#854f0b"};return{bg:"#eaf3de",c:"#3b6d11"};};
 const setLoad=(m,p)=>{document.getElementById("loadMsg").textContent=m;document.getElementById("loadBar").style.width=p+"%";};
 const fmtTime=()=>{const n=new Date();return n.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});};
 
@@ -239,7 +306,7 @@ function handleCred(resp){
 
 function signOut(){
   google.accounts.id.disableAutoSelect();
-  token=null;allData={};rawData={};zMap={};SHEET_TABS=[];
+  token=null;allData={};rawData={};zMap={};SHEET_TABS=[];lobPendCounts={};
   document.getElementById("dashboard").style.display="none";
   document.getElementById("loginPage").style.display="flex";
 }
@@ -293,29 +360,32 @@ async function loadAll(isRefresh=false){
       const l=SHEET_TABS[i];
       setLoad(`Loading ${l.label}...`,Math.round(20+(i/SHEET_TABS.length)*75));
       const data=await fetchTab(l.tab);
-      rawData[l.key]=data; // store raw (unfiltered) for validation
+      rawData[l.key]=data;
       allData[l.key]=data;
     }
+    // compute sidebar counts
+    SHEET_TABS.forEach(l=>{
+      const en=enrich(allData[l.key]||[],l.key);
+      lobPendCounts[l.key]=en.filter(r=>r._p).length;
+    });
     document.getElementById("lastRefresh").textContent=`· ${fmtTime()}`;
     setLoad("Done",100);
     activeTab=SHEET_TABS[0].key;
     document.getElementById("loadingOverlay").style.display="none";
     document.getElementById("dashboard").style.display="block";
+    renderSidebar();
     render();
   }catch(e){showErr("Failed to load data",e.message);}
 }
 
-/* ── REFRESH ── */
 window.refreshData=async function(){
   const btn=document.getElementById("refreshBtn");
-  btn.classList.add("spinning");
-  btn.disabled=true;
-  allData={};rawData={};zMap={};
+  btn.classList.add("spinning");btn.disabled=true;
+  allData={};rawData={};zMap={};lobPendCounts={};
   document.getElementById("loadingOverlay").style.display="flex";
   setLoad("Refreshing data...",5);
   await loadAll(true);
-  btn.classList.remove("spinning");
-  btn.disabled=false;
+  btn.classList.remove("spinning");btn.disabled=false;
 };
 
 /* ── DATA PROCESSING ── */
@@ -341,12 +411,20 @@ function applyF(e){
   });
 }
 
+/* ── SIDEBAR ── */
+function renderSidebar(){
+  document.getElementById("lobNav").innerHTML=SHEET_TABS.map(l=>`
+    <button class="lob-btn${activeTab===l.key?" active":""}" onclick="swTab('${l.key}')">
+      <span class="lob-dot" style="background:${l.color}"></span>
+      <span>${l.label}</span>
+      <span class="lob-count" style="color:${activeTab===l.key?"#fff":l.color}">${(lobPendCounts[l.key]||0).toLocaleString()}</span>
+    </button>`).join("");
+}
+
 /* ── VALIDATION PIVOT ── */
 window.openValidation=function(){
   const ov=document.createElement("div");
   ov.className="modal-overlay";
-
-  // Build pivot data for all LOBs
   const lobSummaries=SHEET_TABS.map(l=>{
     const raw=rawData[l.key]||[];
     const enriched=enrich(raw,l.key);
@@ -359,84 +437,45 @@ window.openValidation=function(){
     const g7=pending.filter(r=>r._a>7).length;
     const g15=pending.filter(r=>r._a>15).length;
     const g30=pending.filter(r=>r._a>30).length;
-    const b07=pending.filter(r=>r._a<=7).length;
-    const b815=pending.filter(r=>r._a>=8&&r._a<=15).length;
-    const b1630=pending.filter(r=>r._a>=16&&r._a<=30).length;
-    const b30p=pending.filter(r=>r._a>30).length;
-    const avgA=totalPend>0?(pending.reduce((s,r)=>s+r._a,0)/totalPend).toFixed(1):"0.0";
-
-    // Branch breakdown
     const brMap={};
     pending.forEach(r=>{const b=(r["Location"]||"").trim();if(b)brMap[b]=(brMap[b]||0)+1;});
     const brArr=Object.entries(brMap).sort((a,b)=>b[1]-a[1]);
-
-    return{label:l.label,key:l.key,color:l.color,totalRaw,blankLoc,amsRows,afterExcl,totalPend,g7,g15,g30,b07,b815,b1630,b30p,avgA,brArr};
+    return{label:l.label,key:l.key,color:l.color,totalRaw,blankLoc,amsRows,afterExcl,totalPend,g7,g15,g30,brArr};
   });
-
   let pivotHTML=`
-    <div class="excl-note">
-      ⚠ <strong>Data Exclusion Note:</strong> The dashboard excludes rows where <strong>Location = blank</strong> and <strong>Location = "AMS"</strong> as per your earlier instruction. The "Raw (Sheet)" count below matches your Google Sheet exactly. The "Dashboard Total" shows post-exclusion count.
-    </div>
-
+    <div class="excl-note">⚠ <strong>Data Exclusion Note:</strong> Rows with <strong>Location = blank</strong> and <strong>Location = "AMS"</strong> are excluded. "Raw (Sheet)" matches your Google Sheet exactly.</div>
     <div class="pivot-section">
       <h3>Summary Pivot — All LOBs</h3>
       <table class="pivot-table">
-        <thead><tr>
-          <th>LOB</th>
-          <th class="num">Raw (Sheet)</th>
-          <th class="num">Blank Location</th>
-          <th class="num">AMS Excluded</th>
-          <th class="num">Dashboard Total</th>
-          <th class="num">Op Lock Pending</th>
-          <th class="num">% Pending</th>
-          <th class="num">Avg Aging</th>
-          <th class="num">&gt;7d</th>
-          <th class="num">&gt;15d</th>
-          <th class="num">&gt;30d</th>
-          <th class="num">0–7d</th>
-          <th class="num">8–15d</th>
-          <th class="num">16–30d</th>
-          <th class="num">30+d</th>
-        </tr></thead>
+        <thead><tr><th>LOB</th><th class="num">Raw (Sheet)</th><th class="num">Blank Loc</th><th class="num">AMS Excl</th><th class="num">Dashboard Total</th><th class="num">Op Lock Pending</th><th class="num">% Pending</th><th class="num">&gt;7d</th><th class="num">&gt;15d</th><th class="num">&gt;30d</th></tr></thead>
         <tbody>
           ${lobSummaries.map(s=>`<tr>
             <td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${s.color};margin-right:6px;vertical-align:middle"></span><strong>${s.label}</strong></td>
             <td class="num">${s.totalRaw.toLocaleString()}</td>
-            <td class="num" style="color:${s.blankLoc>0?"#854f0b":"#3b6d11"}">${s.blankLoc.toLocaleString()}</td>
-            <td class="num" style="color:${s.amsRows>0?"#854f0b":"#3b6d11"}">${s.amsRows.toLocaleString()}</td>
+            <td class="num" style="color:${s.blankLoc>0?"#854f0b":"#3b6d11"}">${s.blankLoc}</td>
+            <td class="num" style="color:${s.amsRows>0?"#854f0b":"#3b6d11"}">${s.amsRows}</td>
             <td class="num"><strong>${s.afterExcl.toLocaleString()}</strong></td>
             <td class="num" style="color:#a32d2d"><strong>${s.totalPend.toLocaleString()}</strong></td>
             <td class="num">${pct(s.totalPend,s.afterExcl)}%</td>
-            <td class="num">${s.avgA}d</td>
-            <td class="num" style="color:#854f0b">${s.g7.toLocaleString()}</td>
-            <td class="num" style="color:#993c1d">${s.g15.toLocaleString()}</td>
-            <td class="num" style="color:#a32d2d">${s.g30.toLocaleString()}</td>
-            <td class="num" style="color:#1d9e75">${s.b07.toLocaleString()}</td>
-            <td class="num" style="color:#ef9f27">${s.b815.toLocaleString()}</td>
-            <td class="num" style="color:#d85a30">${s.b1630.toLocaleString()}</td>
-            <td class="num" style="color:#e24b4a">${s.b30p.toLocaleString()}</td>
+            <td class="num" style="color:#854f0b">${s.g7}</td>
+            <td class="num" style="color:#993c1d">${s.g15}</td>
+            <td class="num" style="color:#a32d2d">${s.g30}</td>
           </tr>`).join("")}
         </tbody>
         <tfoot><tr>
           <td><strong>Grand Total</strong></td>
           <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.totalRaw,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.blankLoc,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.amsRows,0).toLocaleString()}</strong></td>
+          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.blankLoc,0)}</strong></td>
+          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.amsRows,0)}</strong></td>
           <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.afterExcl,0).toLocaleString()}</strong></td>
           <td class="num" style="color:#a32d2d"><strong>${lobSummaries.reduce((s,l)=>s+l.totalPend,0).toLocaleString()}</strong></td>
           <td class="num"><strong>${pct(lobSummaries.reduce((s,l)=>s+l.totalPend,0),lobSummaries.reduce((s,l)=>s+l.afterExcl,0))}%</strong></td>
-          <td class="num">—</td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.g7,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.g15,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.g30,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.b07,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.b815,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.b1630,0).toLocaleString()}</strong></td>
-          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.b30p,0).toLocaleString()}</strong></td>
+          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.g7,0)}</strong></td>
+          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.g15,0)}</strong></td>
+          <td class="num"><strong>${lobSummaries.reduce((s,l)=>s+l.g30,0)}</strong></td>
         </tr></tfoot>
       </table>
     </div>
-
     <div class="pivot-section">
       <h3>Branch-wise Pending Jobs — All LOBs</h3>
       <div class="tab-pills" id="branchPivotTabs">
@@ -444,26 +483,19 @@ window.openValidation=function(){
       </div>
       <div id="branchPivotContent"></div>
     </div>`;
-
   ov.innerHTML=`<div class="modal-box">
     <div class="modal-header">
-      <div>
-        <div class="modal-title">⊞ Data Validation — Pivot Tables</div>
-        <div class="modal-subtitle">Cross-check dashboard numbers against raw Google Sheet data</div>
-      </div>
+      <div><div class="modal-title">⊞ Data Validation — Pivot Tables</div><div class="modal-subtitle">Cross-check dashboard numbers against raw Google Sheet data</div></div>
       <div class="modal-actions">
-        <button class="download-btn" onclick="dlValidation()">⬇ Download Validation CSV</button>
+        <button class="download-btn" onclick="dlValidation()">⬇ Download CSV</button>
         <button class="close-btn" id="clsV">✕</button>
       </div>
     </div>
     <div class="modal-body">${pivotHTML}</div>
   </div>`;
-
   document.body.appendChild(ov);
   ov.querySelector("#clsV").onclick=()=>ov.remove();
   ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
-
-  // Store summaries for branch pivot
   window._lobSummaries=lobSummaries;
   showBranchPivot(lobSummaries[0].key);
 };
@@ -472,46 +504,27 @@ window.showBranchPivot=function(key){
   const s=window._lobSummaries.find(x=>x.key===key);
   if(!s)return;
   document.querySelectorAll(".tab-pill").forEach(el=>el.classList.remove("active"));
-  const btn=document.getElementById("bpt_"+key);
-  if(btn)btn.classList.add("active");
-  const el=document.getElementById("branchPivotContent");
-  if(!el)return;
-  if(s.brArr.length===0){el.innerHTML=`<div class="no-data">No pending jobs found for ${s.label}</div>`;return;}
+  const btn=document.getElementById("bpt_"+key);if(btn)btn.classList.add("active");
+  const el=document.getElementById("branchPivotContent");if(!el)return;
+  if(s.brArr.length===0){el.innerHTML=`<div class="no-data">No pending jobs for ${s.label}</div>`;return;}
   const total=s.brArr.reduce((sum,x)=>sum+x[1],0);
   el.innerHTML=`<table class="pivot-table">
-    <thead><tr>
-      <th>Branch</th>
-      <th class="num">Pending Jobs</th>
-      <th class="num">% of LOB Pending</th>
-      <th class="num">Share Bar</th>
-    </tr></thead>
-    <tbody>
-      ${s.brArr.map(([b,v],i)=>`<tr>
-        <td>${b}</td>
-        <td class="num"><strong>${v.toLocaleString()}</strong></td>
-        <td class="num">${pct(v,total)}%</td>
-        <td><div style="background:#f0f0f0;border-radius:3px;height:10px;width:200px"><div style="width:${pct(v,s.brArr[0][1])}%;height:10px;background:${s.color};border-radius:3px"></div></div></td>
-      </tr>`).join("")}
-    </tbody>
-    <tfoot><tr>
-      <td><strong>Total</strong></td>
-      <td class="num"><strong>${total.toLocaleString()}</strong></td>
-      <td class="num"><strong>100%</strong></td>
-      <td></td>
-    </tr></tfoot>
+    <thead><tr><th>Branch</th><th class="num">Pending Jobs</th><th class="num">% of LOB</th><th>Share</th></tr></thead>
+    <tbody>${s.brArr.map(([b,v])=>`<tr>
+      <td>${b}</td><td class="num"><strong>${v}</strong></td><td class="num">${pct(v,total)}%</td>
+      <td><div style="background:#f0f0f0;border-radius:3px;height:8px;width:180px"><div style="width:${pct(v,s.brArr[0][1])}%;height:8px;background:${s.color};border-radius:3px"></div></div></td>
+    </tr>`).join("")}</tbody>
+    <tfoot><tr><td><strong>Total</strong></td><td class="num"><strong>${total}</strong></td><td class="num">100%</td><td></td></tr></tfoot>
   </table>`;
 };
 
 window.dlValidation=function(){
   const s=window._lobSummaries;
-  const lines=["LOB,Raw (Sheet),Blank Location,AMS Excluded,Dashboard Total,Op Lock Pending,% Pending,Avg Aging,>7d,>15d,>30d,0-7d,8-15d,16-30d,30+d"];
-  s.forEach(l=>lines.push(`${l.label},${l.totalRaw},${l.blankLoc},${l.amsRows},${l.afterExcl},${l.totalPend},${pct(l.totalPend,l.afterExcl)}%,${l.avgA},${l.g7},${l.g15},${l.g30},${l.b07},${l.b815},${l.b1630},${l.b30p}`));
-  const totRow=`Grand Total,${s.reduce((x,l)=>x+l.totalRaw,0)},${s.reduce((x,l)=>x+l.blankLoc,0)},${s.reduce((x,l)=>x+l.amsRows,0)},${s.reduce((x,l)=>x+l.afterExcl,0)},${s.reduce((x,l)=>x+l.totalPend,0)},${pct(s.reduce((x,l)=>x+l.totalPend,0),s.reduce((x,l)=>x+l.afterExcl,0))}%,-,${s.reduce((x,l)=>x+l.g7,0)},${s.reduce((x,l)=>x+l.g15,0)},${s.reduce((x,l)=>x+l.g30,0)},${s.reduce((x,l)=>x+l.b07,0)},${s.reduce((x,l)=>x+l.b815,0)},${s.reduce((x,l)=>x+l.b1630,0)},${s.reduce((x,l)=>x+l.b30p,0)}`;
-  lines.push(totRow);
+  const lines=["LOB,Raw (Sheet),Blank Location,AMS Excluded,Dashboard Total,Op Lock Pending,% Pending,>7d,>15d,>30d"];
+  s.forEach(l=>lines.push(`${l.label},${l.totalRaw},${l.blankLoc},${l.amsRows},${l.afterExcl},${l.totalPend},${pct(l.totalPend,l.afterExcl)}%,${l.g7},${l.g15},${l.g30}`));
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([lines.join("\n")],{type:"text/csv"}));
-  a.download=`SAR_Validation_Pivot_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
+  a.download=`SAR_Validation_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 };
 
 /* ── DOWNLOAD CSV ── */
@@ -532,8 +545,7 @@ function buildFN(lbl){
 /* ── MODAL ── */
 function openModal(title,subtitle,rows,fnLbl){
   const fn=buildFN(fnLbl);
-  const ov=document.createElement("div");
-  ov.className="modal-overlay";
+  const ov=document.createElement("div");ov.className="modal-overlay";
   ov.innerHTML=`<div class="modal-box">
     <div class="modal-header">
       <div><div class="modal-title">${title}</div><div class="modal-subtitle">${subtitle}</div></div>
@@ -544,20 +556,19 @@ function openModal(title,subtitle,rows,fnLbl){
     </div>
     <div class="modal-body">
       <table class="modal-table">
-        <thead><tr><th>#</th><th>Shipment No</th><th>Branch</th><th>Job Owner</th><th>Job Date</th><th>ETD Loading Port</th><th>ETA Discharge</th><th>Aging</th><th>Prov. Revenue</th><th>Billed Revenue</th><th>Unbilled Revenue</th><th>Prov. Cost</th><th>Posted Cost</th><th>Unposted Cost</th><th>Accrual Cost</th><th>WIP Revenue</th><th>Prov. Profit</th><th>Actual Profit</th></tr></thead>
-        <tbody>${rows.map((r,i)=>{const b=ab(r._a);return`<tr>
+        <thead><tr><th>#</th><th>Shipment No</th><th>Branch</th><th>Job Owner</th><th>Job Date</th><th>ETD Loading Port</th><th>ETA Discharge</th><th>Prov. Revenue</th><th>Billed Revenue</th><th>Unbilled Revenue</th><th>Prov. Cost</th><th>Posted Cost</th><th>Unposted Cost</th><th>Accrual Cost</th><th>WIP Revenue</th><th>Prov. Profit</th><th>Actual Profit</th></tr></thead>
+        <tbody>${rows.map((r,i)=>`<tr>
           <td style="color:#aaa">${i+1}</td>
           <td style="color:#185fa5;font-weight:600">${r["Shipment No"]||"—"}</td>
           <td>${r["Location"]||"—"}</td><td>${r["Job Owner"]||"—"}</td>
           <td>${r["Job Date"]||"—"}</td><td>${r["ETD Loading Port"]||"—"}</td>
           <td>${r["ETA Discharge"]||"—"}</td>
-          <td><span class="badge" style="background:${b.bg};color:${b.c}">${r._a}d</span></td>
           <td>${r["Provisional Revenue (A)"]||"—"}</td><td>${r["Billed Revenue (C)"]||"—"}</td>
           <td>${r["Unbilled Revenue (D=A-C)"]||"—"}</td><td>${r["Provisional Cost (E)"]||"—"}</td>
           <td>${r["Posted Cost (G)"]||"—"}</td><td>${r["Unposted Cost (H = E-G)"]||"—"}</td>
           <td>${r["Accrual Cost"]||"—"}</td><td>${r["WIP Revenue"]||"—"}</td>
           <td>${r["Provisional Profit (I=A-E)"]||"—"}</td><td>${r["Actual Profit (J=C-G)"]||"—"}</td>
-        </tr>`;}).join("")}</tbody>
+        </tr>`).join("")}</tbody>
       </table>
     </div>
   </div>`;
@@ -580,10 +591,7 @@ function render(){
   const fil=applyF(en);
   const pend=fil.filter(r=>r._p);
   const tJ=fil.length,tP=pend.length;
-  const avgA=tP>0?pend.reduce((s,r)=>s+r._a,0)/tP:0;
   const g7=pend.filter(r=>r._a>7),g15=pend.filter(r=>r._a>15),g30=pend.filter(r=>r._a>30);
-  const b07=pend.filter(r=>r._a<=7).length,b815=pend.filter(r=>r._a>=8&&r._a<=15).length;
-  const b1630=pend.filter(r=>r._a>=16&&r._a<=30).length,b30p=pend.filter(r=>r._a>30).length;
   const brM={},owM={},moM={},zM2={};
   pend.forEach(r=>{
     const b=(r["Location"]||"").trim();if(b)brM[b]=(brM[b]||0)+1;
@@ -592,7 +600,7 @@ function render(){
     const z=(r._z||"").trim();if(z)zM2[z]=(zM2[z]||0)+1;
   });
   const brA=Object.entries(brM).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const owA=Object.entries(owM).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const owA=Object.entries(owM).sort((a,b)=>b[1]-a[1]);
   const moA=Object.entries(moM).sort((a,b)=>a[0].localeCompare(b[0])).slice(-10);
   const zArr=Object.entries(zM2).sort((a,b)=>b[1]-a[1]);
   const mxB=brA[0]?.[1]||1,mxO=owA[0]?.[1]||1,mxM=Math.max(...moA.map(x=>x[1]),1);
@@ -600,8 +608,6 @@ function render(){
 
   const sel=(lbl,opts,val,fk)=>`<div class="filter-group"><span class="filter-label">${lbl}</span><select onchange="sF('${fk}',this.value)">${opts.map(o=>`<option${o===val?" selected":""}>${o}</option>`).join("")}</select></div>`;
   const mBar=(v,mx,c,p)=>`<div class="mini-bar-track" style="background:${p}"><div class="mini-bar-fill" style="width:${mx>0?Math.round(v/mx*100):0}%;background:${c}"></div></div>`;
-
-  document.getElementById("tabsRow").innerHTML=SHEET_TABS.map(l=>`<button class="tab-btn" onclick="swTab('${l.key}')" style="background:${activeTab===l.key?l.color:l.pastel};color:${activeTab===l.key?"#fff":l.color};box-shadow:${activeTab===l.key?`0 2px 8px ${l.color}44`:"none"}">${l.label}</button>`).join("");
 
   document.getElementById("filtersRow").innerHTML=
     sel("Branch",branches,filters.branch,"branch")+
@@ -611,61 +617,133 @@ function render(){
     `<div class="filter-group"><span class="filter-label" style="color:transparent">x</span><button class="reset-btn" onclick="rF()">↺ Reset</button></div>`;
 
   document.getElementById("mainContent").innerHTML=`
-    <div class="section-label">Executive Summary — ${li.label}</div>
-    <div class="kpi-grid">
-      <div class="kpi-card" style="background:#eef5fd;border-color:#185fa5"><div class="kpi-label">Total Jobs</div><div class="kpi-value" style="color:#185fa5">${tJ.toLocaleString()}</div><div class="kpi-sub">In selected view</div></div>
-      <div class="kpi-card clickable" style="background:#fef2f2;border-color:#a32d2d" onclick="openModal('Op Lock Pending Jobs','${tP} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._P,'OpLockPending')">
-        <div class="click-hint" style="color:#a32d2d">click to view ↗</div><div class="kpi-label">Op Lock Pending</div><div class="kpi-value" style="color:#a32d2d">${tP.toLocaleString()}</div><div class="kpi-sub" style="color:#a32d2d">${pct(tP,tJ)}% of total jobs</div></div>
-      <div class="kpi-card" style="background:#fffbf0;border-color:#854f0b"><div class="kpi-label">Avg Aging (days)</div><div class="kpi-value" style="color:#854f0b">${avgA.toFixed(1)}</div><div class="kpi-sub">ETD or Job Date base</div></div>
-      <div class="kpi-card" style="background:#f5f5f5;border-color:#888"><div class="kpi-label">HBL Pending</div><div class="kpi-value" style="color:#888">—</div><div class="kpi-sub">Coming soon</div></div>
-      <div class="kpi-card" style="background:#f5f5f5;border-color:#888"><div class="kpi-label">MBL Pending</div><div class="kpi-value" style="color:#888">—</div><div class="kpi-sub">Coming soon</div></div>
+    <!-- LOB Header -->
+    <div class="lob-header">
+      <span class="lob-header-dot" style="background:${li.color}"></span>
+      <span class="lob-header-title">${li.label}</span>
+      <span class="lob-header-sub">— Pendency Overview</span>
     </div>
-    <div class="risk-grid">
-      <div class="risk-card" style="background:#fffbf0;border-color:#ef9f27" onclick="openModal('Jobs > ETD + 7 Days','${g7.length} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._G7,'ETDPlus7')">
-        <div class="risk-hint" style="color:#ef9f27">click to view ↗</div><div class="risk-label">Jobs > ETD + 7 Days</div><div class="risk-value" style="color:#ef9f27">${g7.length.toLocaleString()}</div>
-        <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#ef9f27;width:${pct(g7.length,tP)}%"></div></div><div class="risk-pct">${pct(g7.length,tP)}% of pending</div></div>
-      <div class="risk-card" style="background:#fff5f0;border-color:#d85a30" onclick="openModal('Jobs > ETD + 15 Days','${g15.length} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._G15,'ETDPlus15')">
-        <div class="risk-hint" style="color:#d85a30">click to view ↗</div><div class="risk-label">Jobs > ETD + 15 Days</div><div class="risk-value" style="color:#d85a30">${g15.length.toLocaleString()}</div>
-        <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#d85a30;width:${pct(g15.length,tP)}%"></div></div><div class="risk-pct">${pct(g15.length,tP)}% of pending</div></div>
-      <div class="risk-card" style="background:#fef2f2;border-color:#e24b4a" onclick="openModal('Jobs > ETD + 30 Days','${g30.length} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._G30,'ETDPlus30')">
-        <div class="risk-hint" style="color:#e24b4a">click to view ↗</div><div class="risk-label">Jobs > ETD + 30 Days</div><div class="risk-value" style="color:#e24b4a">${g30.length.toLocaleString()}</div>
-        <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#e24b4a;width:${pct(g30.length,tP)}%"></div></div><div class="risk-pct">${pct(g30.length,tP)}% of pending</div></div>
+
+    <!-- KPI Strip: only Total Jobs + Op Lock Pending -->
+    <div class="kpi-strip">
+      <div class="kpi-card" style="border-color:#185fa5">
+        <div class="kpi-label">Total Jobs</div>
+        <div class="kpi-value" style="color:#185fa5">${tJ.toLocaleString()}</div>
+        <div class="kpi-sub">In selected view</div>
+      </div>
+      <div class="kpi-card clickable" style="border-color:#a32d2d" onclick="openModal('Op Lock Pending Jobs','${tP} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._P,'OpLockPending')">
+        <div class="click-hint" style="color:#a32d2d">click to view ↗</div>
+        <div class="kpi-label">Op Lock Pending</div>
+        <div class="kpi-value" style="color:#a32d2d">${tP.toLocaleString()}</div>
+        <div class="kpi-sub" style="color:#c04040">${pct(tP,tJ)}% of total jobs</div>
+      </div>
+      <div class="kpi-card" style="border-color:#533489">
+        <div class="kpi-label">Pending Job Owners</div>
+        <div class="kpi-value" style="color:#533489">${Object.keys(owM).length.toLocaleString()}</div>
+        <div class="kpi-sub">Unique owners with open jobs</div>
+      </div>
     </div>
+
+    <!-- Risk Strip -->
+    <div class="section-label">ETD Breach — Risk Bands</div>
+    <div class="risk-strip">
+      <div class="risk-card" style="border-color:#ef9f27" onclick="openModal('Jobs > ETD + 7 Days','${g7.length} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._G7,'ETDPlus7')">
+        <div class="risk-hint" style="color:#ef9f27">click to view ↗</div>
+        <div class="risk-label">Jobs &gt; ETD + 7 Days</div>
+        <div class="risk-value" style="color:#ef9f27">${g7.length.toLocaleString()}</div>
+        <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#ef9f27;width:${pct(g7.length,tP)}%"></div></div>
+        <div class="risk-pct">${pct(g7.length,tP)}% of pending</div>
+      </div>
+      <div class="risk-card" style="border-color:#d85a30" onclick="openModal('Jobs > ETD + 15 Days','${g15.length} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._G15,'ETDPlus15')">
+        <div class="risk-hint" style="color:#d85a30">click to view ↗</div>
+        <div class="risk-label">Jobs &gt; ETD + 15 Days</div>
+        <div class="risk-value" style="color:#d85a30">${g15.length.toLocaleString()}</div>
+        <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#d85a30;width:${pct(g15.length,tP)}%"></div></div>
+        <div class="risk-pct">${pct(g15.length,tP)}% of pending</div>
+      </div>
+      <div class="risk-card" style="border-color:#e24b4a" onclick="openModal('Jobs > ETD + 30 Days','${g30.length} jobs — ${li.label} | Branch: ${filters.branch} | Month: ${filters.month}',window._G30,'ETDPlus30')">
+        <div class="risk-hint" style="color:#e24b4a">click to view ↗</div>
+        <div class="risk-label">Jobs &gt; ETD + 30 Days</div>
+        <div class="risk-value" style="color:#e24b4a">${g30.length.toLocaleString()}</div>
+        <div class="risk-bar-track"><div class="risk-bar-fill" style="background:#e24b4a;width:${pct(g30.length,tP)}%"></div></div>
+        <div class="risk-pct">${pct(g30.length,tP)}% of pending</div>
+      </div>
+    </div>
+
+    <!-- Monthly Trend -->
     <div class="section-label">Monthly Pendency Trend</div>
     <div class="trend-wrap"><div class="trend-bars" id="tB">
       ${moA.map(([mk,v])=>{const h=Math.round((v/mxM)*100);return`<div class="trend-col" onmouseenter="sTip(event,${v})" onmouseleave="hTip()"><div class="trend-bar" style="height:${h}px;background:${li.color}"></div><div class="trend-month">${fmtMS(mk)}</div></div>`;}).join("")}
       <div class="chart-tooltip" id="cTip"></div>
     </div></div>
-    <div class="section-label">Aging Distribution &amp; Zone-wise Pendency</div>
+
+    <!-- Branch + Zone -->
+    <div class="section-label">Branch Analysis &amp; Zone-wise Pendency</div>
     <div class="two-col">
-      <div class="card"><div class="card-title">Aging Distribution</div><div class="aging-grid">
-        <div class="aging-bucket" style="background:#e8f9f3;border-color:#1d9e75"><div class="aging-val" style="color:#1d9e75">${b07.toLocaleString()}</div><div class="aging-lbl">0–7 days (Fresh)</div></div>
-        <div class="aging-bucket" style="background:#fffbf0;border-color:#ef9f27"><div class="aging-val" style="color:#ef9f27">${b815.toLocaleString()}</div><div class="aging-lbl">8–15 days (Watch)</div></div>
-        <div class="aging-bucket" style="background:#fff5f0;border-color:#d85a30"><div class="aging-val" style="color:#d85a30">${b1630.toLocaleString()}</div><div class="aging-lbl">16–30 days (Risk)</div></div>
-        <div class="aging-bucket" style="background:#fef2f2;border-color:#e24b4a"><div class="aging-val" style="color:#e24b4a">${b30p.toLocaleString()}</div><div class="aging-lbl">30+ days (Critical)</div></div>
-      </div></div>
-      <div class="card"><div class="card-title">${activeTab==="iso_tank"?"ISO Tank — No Zone Mapping":"Zone-wise Pendency"}</div>
-        ${activeTab==="iso_tank"?`<div class="no-data">ISO Tank LOB does not follow zone mapping.</div>`:zArr.length===0?`<div class="no-data">No zone data</div>`:zArr.map(([z,v],i)=>`<div class="mini-bar-row"><div class="mini-bar-label narrow">${z}</div>${mBar(v,zArr[0][1],BC[i%10],BP[i%10])}<div class="mini-bar-val">${v}</div></div>`).join("")}
-      </div>
-    </div>
-    <div class="section-label">Branch Analysis &amp; Job Owner Accountability</div>
-    <div class="two-col">
-      <div class="card"><div class="card-title">Top 10 Branches — Pending Jobs <span class="card-hint">(click a branch to view jobs)</span></div>
+      <div class="card">
+        <div class="card-title">Top 10 Branches — Pending Jobs <span class="card-hint">(click to drill down)</span></div>
         ${brA.length===0?`<div class="no-data">No pending jobs</div>`:brA.map(([b,v],i)=>`<div class="mini-bar-row clickable" onclick="oBranch('${b.replace(/'/g,"\\'")}')"><div class="mini-bar-label">${b}</div>${mBar(v,mxB,BC[i%10],BP[i%10])}<div class="mini-bar-val">${v}</div></div>`).join("")}
       </div>
-      <div class="card"><div class="card-title">Job Owner Leaderboard — Highest Pending</div>
-        ${owA.length===0?`<div class="no-data">No data</div>`:owA.map(([o,v],i)=>`<div class="owner-row"><div class="rank-badge" style="background:${RB[i]};color:${RC[i]}">${i+1}</div><div class="owner-name">${o}</div>${mBar(v,mxO,RC[i],RB[i])}<div class="mini-bar-val">${v}</div></div>`).join("")}
+      <div class="card">
+        <div class="card-title">${activeTab==="iso_tank"?"ISO Tank — No Zone Mapping":"Zone-wise Pendency"}</div>
+        ${activeTab==="iso_tank"?`<div class="no-data">ISO Tank LOB does not follow zone mapping.</div>`:zArr.length===0?`<div class="no-data">No zone data</div>`:zArr.map(([z,v])=>`<div class="zone-row"><span class="zone-name">${z}</span><span class="zone-val">${v}</span></div>`).join("")}
       </div>
+    </div>
+
+    <!-- Job Owner Table — ALL owners, clickable -->
+    <div class="section-label">Job Owner Pendency — Full View</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">All Job Owners with Pending Jobs <span class="card-hint">(click a row to view shipments)</span></div>
+      ${owA.length===0?`<div class="no-data">No pending jobs</div>`:`
+      <table class="owner-table">
+        <thead><tr>
+          <th>#</th>
+          <th>Job Owner</th>
+          <th>Branch</th>
+          <th class="num">Pending</th>
+          <th class="num">% of LOB</th>
+          <th>Share</th>
+        </tr></thead>
+        <tbody>
+          ${owA.map(([o,v],i)=>{
+            // find branch for this owner from pend data
+            const ownerRows=pend.filter(r=>(r["Job Owner"]||"").trim()===o);
+            const branchSet=[...new Set(ownerRows.map(r=>(r["Location"]||"").trim()).filter(Boolean))];
+            const brLabel=branchSet.length===1?branchSet[0]:branchSet.length>1?`${branchSet[0]} +${branchSet.length-1}`:"—";
+            return`<tr style="cursor:pointer" onclick="oOwner('${o.replace(/'/g,"\\'")}')">
+              <td><span class="rank-badge" style="background:${RB[i%8]};color:${RC[i%8]}">${i+1}</span></td>
+              <td class="owner-name-cell">${o}</td>
+              <td style="font-size:11px;color:#888">${brLabel}</td>
+              <td class="num"><span class="pend-badge" style="background:#fef2f2;color:#a32d2d">${v}</span></td>
+              <td class="num" style="color:#999;font-size:11px">${pct(v,tP)}%</td>
+              <td class="owner-bar-cell"><div style="background:#f0f0f0;border-radius:3px;height:8px"><div style="width:${pct(v,mxO)}%;height:8px;background:${li.color};border-radius:3px"></div></div></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+        <tfoot>
+          <tr style="background:#f7fafd">
+            <td colspan="3" style="font-size:11px;font-weight:600;padding:7px 8px;color:#1a3a5c">Total</td>
+            <td class="num" style="padding:7px 8px;font-weight:700;color:#a32d2d">${tP}</td>
+            <td class="num" style="padding:7px 8px;font-size:11px;color:#999">100%</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>`}
     </div>`;
 }
 
-window.swTab=k=>{activeTab=k;filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};render();};
+window.swTab=k=>{activeTab=k;filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};renderSidebar();render();};
 window.rF=()=>{filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};render();};
 window.sF=(k,v)=>{filters[k]=v;render();};
 window.oBranch=b=>{
   const rows=window._P.filter(r=>(r["Location"]||"").trim()===b);
   const l=(SHEET_TABS.find(x=>x.key===activeTab)||{label:""}).label;
   openModal(`Branch: ${b} — Pending Jobs`,`${rows.length} jobs — ${l} | Month: ${filters.month}`,rows,`Branch_${b}`);
+};
+window.oOwner=o=>{
+  const rows=window._P.filter(r=>(r["Job Owner"]||"").trim()===o);
+  const l=(SHEET_TABS.find(x=>x.key===activeTab)||{label:""}).label;
+  openModal(`Job Owner: ${o} — Pending Jobs`,`${rows.length} jobs — ${l} | Month: ${filters.month}`,rows,`Owner_${o.replace(/\s+/g,"_")}`);
 };
 window.sTip=(e,v)=>{
   const tt=document.getElementById("cTip");if(!tt)return;
