@@ -585,10 +585,10 @@ function render(){
   const branches=["All",...uniq(en.map(r=>(r["Location"]||"").trim()).filter(Boolean)).sort()];
   const zones=activeTab==="iso_tank"?["All"]:["All",...uniq(en.map(r=>r._z).filter(v=>v&&v.trim()!=="")).sort()];
   const regions=activeTab==="iso_tank"?["All"]:["All",...uniq(en.map(r=>r._r).filter(v=>v&&v.trim()!=="")).sort()];
+  const jobOwners=["All",...uniq(en.map(r=>(r["Job Owner"]||"").trim()).filter(Boolean)).sort()];
   const mkKeys=uniq(en.map(r=>r._mk).filter(Boolean)).sort().reverse();
   const mOpts=["All",...mkKeys.map(fmtMK)];
   const fil=applyF(en);
-  const jobOwners=["All",...uniq(fil.map(r=>(r["Job Owner"]||"").trim()).filter(Boolean)).sort()];
   const pend=fil.filter(r=>r._p);
   const tJ=fil.length,tP=pend.length;
   const g7=pend.filter(r=>r._a>7),g15=pend.filter(r=>r._a>15),g30=pend.filter(r=>r._a>30);
@@ -624,8 +624,8 @@ function render(){
       <span class="lob-header-sub">— Pendency Overview</span>
     </div>
 
-    <!-- KPI Strip -->
-    <div class="kpi-strip" style="grid-template-columns:repeat(2,minmax(0,1fr))">`
+    <!-- KPI Strip: only Total Jobs + Op Lock Pending -->
+    <div class="kpi-strip">
       <div class="kpi-card" style="border-color:#185fa5">
         <div class="kpi-label">Total Jobs</div>
         <div class="kpi-value" style="color:#185fa5">${tJ.toLocaleString()}</div>
@@ -636,6 +636,11 @@ function render(){
         <div class="kpi-label">Op Lock Pending</div>
         <div class="kpi-value" style="color:#a32d2d">${tP.toLocaleString()}</div>
         <div class="kpi-sub" style="color:#c04040">${pct(tP,tJ)}% of total jobs</div>
+      </div>
+      <div class="kpi-card" style="border-color:#533489">
+        <div class="kpi-label">Pending Job Owners</div>
+        <div class="kpi-value" style="color:#533489">${Object.keys(owM).length.toLocaleString()}</div>
+        <div class="kpi-sub">Unique owners with open jobs</div>
       </div>
     </div>
 
@@ -685,7 +690,46 @@ function render(){
       </div>
     </div>
 
-    `;
+    <!-- Job Owner Table — ALL owners, clickable -->
+    <div class="section-label">Job Owner Pendency — Full View</div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">All Job Owners with Pending Jobs <span class="card-hint">(click a row to view shipments)</span></div>
+      ${owA.length===0?`<div class="no-data">No pending jobs</div>`:`
+      <table class="owner-table">
+        <thead><tr>
+          <th>#</th>
+          <th>Job Owner</th>
+          <th>Branch</th>
+          <th class="num">Pending</th>
+          <th class="num">% of LOB</th>
+          <th>Share</th>
+        </tr></thead>
+        <tbody>
+          ${owA.map(([o,v],i)=>{
+            // find branch for this owner from pend data
+            const ownerRows=pend.filter(r=>(r["Job Owner"]||"").trim()===o);
+            const branchSet=[...new Set(ownerRows.map(r=>(r["Location"]||"").trim()).filter(Boolean))];
+            const brLabel=branchSet.length===1?branchSet[0]:branchSet.length>1?`${branchSet[0]} +${branchSet.length-1}`:"—";
+            return`<tr style="cursor:pointer" onclick="oOwner('${o.replace(/'/g,"\\'")}')">
+              <td><span class="rank-badge" style="background:${RB[i%8]};color:${RC[i%8]}">${i+1}</span></td>
+              <td class="owner-name-cell">${o}</td>
+              <td style="font-size:11px;color:#888">${brLabel}</td>
+              <td class="num"><span class="pend-badge" style="background:#fef2f2;color:#a32d2d">${v}</span></td>
+              <td class="num" style="color:#999;font-size:11px">${pct(v,tP)}%</td>
+              <td class="owner-bar-cell"><div style="background:#f0f0f0;border-radius:3px;height:8px"><div style="width:${pct(v,mxO)}%;height:8px;background:${li.color};border-radius:3px"></div></div></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+        <tfoot>
+          <tr style="background:#f7fafd">
+            <td colspan="3" style="font-size:11px;font-weight:600;padding:7px 8px;color:#1a3a5c">Total</td>
+            <td class="num" style="padding:7px 8px;font-weight:700;color:#a32d2d">${tP}</td>
+            <td class="num" style="padding:7px 8px;font-size:11px;color:#999">100%</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>`}
+    </div>`;
 }
 
 window.swTab=k=>{activeTab=k;filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};renderSidebar();render();};
@@ -695,6 +739,11 @@ window.oBranch=b=>{
   const rows=window._P.filter(r=>(r["Location"]||"").trim()===b);
   const l=(SHEET_TABS.find(x=>x.key===activeTab)||{label:""}).label;
   openModal(`Branch: ${b} — Pending Jobs`,`${rows.length} jobs — ${l} | Month: ${filters.month}`,rows,`Branch_${b}`);
+};
+window.oOwner=o=>{
+  const rows=window._P.filter(r=>(r["Job Owner"]||"").trim()===o);
+  const l=(SHEET_TABS.find(x=>x.key===activeTab)||{label:""}).label;
+  openModal(`Job Owner: ${o} — Pending Jobs`,`${rows.length} jobs — ${l} | Month: ${filters.month}`,rows,`Owner_${o.replace(/\s+/g,"_")}`);
 };
 window.sTip=(e,v)=>{
   const tt=document.getElementById("cTip");if(!tt)return;
