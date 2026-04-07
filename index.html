@@ -29,19 +29,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .logo-icon{background:#2e6da4;border-radius:8px;padding:6px 12px;font-size:14px;font-weight:700;color:#e8f4ff;letter-spacing:0.5px}
 .logo-sub{font-size:11px;color:#7ec8f7;font-weight:500}
 .topbar-right{display:flex;align-items:center;gap:8px}
-.live-badge{background:#0f6e56;color:#9fe1cb;font-size:11px;border-radius:20px;padding:3px 12px;border:1px solid #1d9e75}
-.date-badge{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:11px;border-radius:8px;padding:4px 12px}
-.refresh-btn{background:#2e6da4;color:#e8f4ff;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:5px 14px;font-size:11px;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:5px;transition:background 0.15s}
-.refresh-btn:hover{background:#3a7ec4}
-.refresh-btn.spinning .r-icon{display:inline-block;animation:spin 0.7s linear infinite}
+.live-badge{background:#0f6e56;color:#9fe1cb;font-size:10px;border-radius:20px;padding:3px 10px;border:1px solid #1d9e75;display:flex;align-items:center;gap:4px;font-weight:600}
+.live-dot{width:6px;height:6px;background:#9fe1cb;border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.topbar-icon-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background 0.15s;color:rgba(255,255,255,0.8);font-size:11px;font-weight:500}
+.topbar-icon-btn:hover{background:rgba(255,255,255,0.15)}
+.topbar-icon-btn svg{flex-shrink:0;opacity:0.85}
+.refresh-btn{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:6px;transition:background 0.15s}
+.refresh-btn:hover{background:rgba(255,255,255,0.15)}
+.refresh-btn.spinning .r-icon{animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.validate-btn{background:transparent;color:#7ec8f7;border:1px solid rgba(255,255,255,0.25);border-radius:8px;padding:5px 14px;font-size:11px;cursor:pointer;font-weight:500}
-.validate-btn:hover{background:rgba(255,255,255,0.1)}
-.user-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:4px 12px;cursor:pointer}
-.user-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover}
-.user-name{font-size:11px;color:rgba(255,255,255,0.85)}
-.signout-btn{font-size:10px;color:#7ec8f7;background:none;border:none;cursor:pointer}
-.last-refresh{font-size:10px;color:rgba(255,255,255,0.5);margin-left:4px}
+.user-badge{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:5px 10px;cursor:pointer;transition:background 0.15s}
+.user-badge:hover{background:rgba(255,255,255,0.15)}
+.user-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.user-name{font-size:11px;color:rgba(255,255,255,0.85);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.signout-icon{color:rgba(255,255,255,0.4);font-size:13px;background:none;border:none;cursor:pointer;padding:0;line-height:1}
+.signout-icon:hover{color:rgba(255,255,255,0.8)}
 
 /* BODY LAYOUT: sidebar + main */
 .body-wrap{display:flex;min-height:calc(100vh - 50px)}
@@ -61,10 +64,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* FILTERS */
 .filters{background:#fff;border:1px solid #e0e8f0;border-radius:12px;padding:10px 16px;display:flex;align-items:flex-end;gap:12px;margin-bottom:14px;flex-wrap:wrap;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
-.filter-group{display:flex;flex-direction:column;gap:3px}
+.filter-group{display:flex;flex-direction:column;gap:3px;position:relative}
 .filter-label{font-size:10px;color:#999;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
 select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;color:#333;cursor:pointer;min-width:110px}
 .reset-btn{background:#1a3a5c;color:#7ec8f7;border:none;border-radius:8px;padding:6px 16px;font-size:11px;cursor:pointer;font-weight:500}
+/* Searchable owner dropdown */
+.owner-search-wrap{position:relative;min-width:150px}
+.owner-search-input{font-size:12px;padding:5px 28px 5px 10px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;color:#333;cursor:pointer;width:100%;outline:none}
+.owner-search-input:focus{border-color:#185fa5;box-shadow:0 0 0 2px rgba(24,95,165,0.1)}
+.owner-dropdown{position:absolute;top:calc(100% + 4px);left:0;min-width:100%;max-width:260px;background:#fff;border:1px solid #dde4ee;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.12);z-index:200;display:none;max-height:220px;overflow-y:auto}
+.owner-dropdown.open{display:block}
+.owner-dropdown-item{padding:7px 12px;font-size:12px;color:#333;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.owner-dropdown-item:hover,.owner-dropdown-item.selected{background:#eef4fd;color:#185fa5}
+.owner-dropdown-item.selected{font-weight:600}
+.owner-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:13px;color:#aaa;cursor:pointer;background:none;border:none;padding:0;line-height:1;display:none}
+.owner-clear.visible{display:block}
 
 /* LOB HEADER */
 .lob-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -210,17 +224,19 @@ select{font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #e0e0e
       </div>
     </div>
     <div class="topbar-right">
-      <div class="live-badge">● Live Data</div>
-      <div class="date-badge" id="dateDisplay"></div>
-      <button class="refresh-btn" id="refreshBtn" onclick="refreshData()">
-        <span class="r-icon">↻</span> Refresh
-        <span class="last-refresh" id="lastRefresh"></span>
+      <div class="live-badge"><span class="live-dot"></span>Live</div>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshData()" title="Refresh data">
+        <svg class="r-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh
       </button>
-      <button class="validate-btn" onclick="openValidation()">⊞ Validate Data</button>
-      <div class="user-badge" onclick="signOut()">
+      <button class="topbar-icon-btn" onclick="openValidation()" title="Validate Data">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Validate
+      </button>
+      <div class="user-badge" onclick="signOut()" title="Sign out">
         <img class="user-avatar" id="userAvatar" src="" alt=""/>
         <span class="user-name" id="userName"></span>
-        <button class="signout-btn">Sign out</button>
+        <button class="signout-icon" title="Sign out">↩</button>
       </div>
     </div>
   </div>
@@ -279,10 +295,8 @@ const isPend=r=>{const ol=r["Operation Lock"];return!ol||ol.toString().trim()===
 const uniq=a=>[...new Set(a)];
 const pct=(n,d)=>d>0?Math.round(n/d*100):0;
 const setLoad=(m,p)=>{document.getElementById("loadMsg").textContent=m;document.getElementById("loadBar").style.width=p+"%";};
-const fmtTime=()=>{const n=new Date();return n.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});};
 
 window.onload=()=>{
-  document.getElementById("dateDisplay").textContent=TODAY.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
   google.accounts.id.initialize({client_id:CLIENT_ID,callback:handleCred,auto_select:false});
   google.accounts.id.renderButton(document.getElementById("g_id_signin"),{theme:"outline",size:"large",text:"signin_with_google",shape:"rectangular",width:300});
 };
@@ -368,8 +382,6 @@ async function loadAll(isRefresh=false){
       const en=enrich(allData[l.key]||[],l.key);
       lobPendCounts[l.key]=en.filter(r=>r._p).length;
     });
-    document.getElementById("lastRefresh").textContent=`· ${fmtTime()}`;
-    setLoad("Done",100);
     activeTab=SHEET_TABS[0].key;
     document.getElementById("loadingOverlay").style.display="none";
     document.getElementById("dashboard").style.display="block";
@@ -380,12 +392,15 @@ async function loadAll(isRefresh=false){
 
 window.refreshData=async function(){
   const btn=document.getElementById("refreshBtn");
-  btn.classList.add("spinning");btn.disabled=true;
+  const svg=btn.querySelector("svg");
+  btn.disabled=true;
+  if(svg)svg.style.animation="spin 0.7s linear infinite";
   allData={};rawData={};zMap={};lobPendCounts={};
   document.getElementById("loadingOverlay").style.display="flex";
   setLoad("Refreshing data...",5);
   await loadAll(true);
-  btn.classList.remove("spinning");btn.disabled=false;
+  if(svg)svg.style.animation="";
+  btn.disabled=false;
 };
 
 /* ── DATA PROCESSING ── */
@@ -609,10 +624,22 @@ function render(){
   const sel=(lbl,opts,val,fk)=>`<div class="filter-group"><span class="filter-label">${lbl}</span><select onchange="sF('${fk}',this.value)">${opts.map(o=>`<option${o===val?" selected":""}>${o}</option>`).join("")}</select></div>`;
   const mBar=(v,mx,c,p)=>`<div class="mini-bar-track" style="background:${p}"><div class="mini-bar-fill" style="width:${mx>0?Math.round(v/mx*100):0}%;background:${c}"></div></div>`;
 
+  const ownerDisplayVal = filters.jobOwner==="All" ? "" : filters.jobOwner;
+  const ownerSearchHTML=`<div class="filter-group">
+    <span class="filter-label">Job Owner</span>
+    <div class="owner-search-wrap">
+      <input class="owner-search-input" id="ownerSearchInput" type="text" placeholder="Search owner…" value="${ownerDisplayVal.replace(/"/g,'&quot;')}" autocomplete="off" onclick="toggleOwnerDD(event)" oninput="filterOwnerDD(this.value)"/>
+      <button class="owner-clear${filters.jobOwner!=='All'?' visible':''}" id="ownerClearBtn" onclick="clearOwner()" title="Clear">✕</button>
+      <div class="owner-dropdown" id="ownerDD">
+        ${jobOwners.map(o=>`<div class="owner-dropdown-item${o===filters.jobOwner?' selected':''}" onclick="pickOwner('${o.replace(/'/g,"\\'")}')"> ${o==='All'?'— All Owners —':o}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
   document.getElementById("filtersRow").innerHTML=
     sel("Branch",branches,filters.branch,"branch")+
     (activeTab!=="iso_tank"?sel("Zone",zones,filters.zone,"zone")+sel("Region",regions,filters.region,"region"):"")+
-    sel("Job Owner",jobOwners,filters.jobOwner,"jobOwner")+
+    ownerSearchHTML+
     sel("Month",mOpts,filters.month,"month")+
     `<div class="filter-group"><span class="filter-label" style="color:transparent">x</span><button class="reset-btn" onclick="rF()">↺ Reset</button></div>`;
 
@@ -691,6 +718,37 @@ function render(){
 window.swTab=k=>{activeTab=k;filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};renderSidebar();render();};
 window.rF=()=>{filters={branch:"All",zone:"All",region:"All",jobOwner:"All",month:"All"};render();};
 window.sF=(k,v)=>{filters[k]=v;render();};
+
+/* Owner searchable dropdown */
+window.toggleOwnerDD=function(e){
+  e.stopPropagation();
+  const dd=document.getElementById("ownerDD");
+  if(dd)dd.classList.toggle("open");
+};
+window.filterOwnerDD=function(q){
+  const dd=document.getElementById("ownerDD");if(!dd)return;
+  const items=dd.querySelectorAll(".owner-dropdown-item");
+  items.forEach(el=>{
+    const txt=el.textContent.trim().toLowerCase();
+    el.style.display=txt.includes(q.toLowerCase())||q===""?"":"none";
+  });
+  dd.classList.add("open");
+};
+window.pickOwner=function(val){
+  filters.jobOwner=val;
+  const dd=document.getElementById("ownerDD");if(dd)dd.classList.remove("open");
+  render();
+};
+window.clearOwner=function(e){
+  if(e)e.stopPropagation();
+  filters.jobOwner="All";
+  render();
+};
+document.addEventListener("click",function(e){
+  const wrap=document.querySelector(".owner-search-wrap");
+  const dd=document.getElementById("ownerDD");
+  if(dd&&wrap&&!wrap.contains(e.target))dd.classList.remove("open");
+});
 window.oBranch=b=>{
   const rows=window._P.filter(r=>(r["Location"]||"").trim()===b);
   const l=(SHEET_TABS.find(x=>x.key===activeTab)||{label:""}).label;
@@ -706,6 +764,41 @@ window.sTip=(e,v)=>{
   tt.textContent=`${v} pending`;
 };
 window.hTip=()=>{const tt=document.getElementById("cTip");if(tt)tt.style.display="none";};
+
+/* ── OWNER SEARCH DROPDOWN ── */
+window.toggleOwnerDD=function(e){
+  e.stopPropagation();
+  const dd=document.getElementById("ownerDD");
+  if(!dd)return;
+  dd.classList.toggle("open");
+};
+window.filterOwnerDD=function(val){
+  const dd=document.getElementById("ownerDD");
+  if(!dd)return;
+  dd.classList.add("open");
+  const q=val.toLowerCase();
+  dd.querySelectorAll(".owner-dropdown-item").forEach(el=>{
+    const txt=el.textContent.toLowerCase();
+    el.style.display=txt.includes(q)?"":"none";
+  });
+};
+window.pickOwner=function(val){
+  filters.jobOwner=val;
+  const dd=document.getElementById("ownerDD");
+  if(dd)dd.classList.remove("open");
+  render();
+};
+window.clearOwner=function(){
+  filters.jobOwner="All";
+  render();
+};
+document.addEventListener("click",function(e){
+  const wrap=document.querySelector(".owner-search-wrap");
+  if(wrap&&!wrap.contains(e.target)){
+    const dd=document.getElementById("ownerDD");
+    if(dd)dd.classList.remove("open");
+  }
+});
 </script>
 </body>
 </html>
